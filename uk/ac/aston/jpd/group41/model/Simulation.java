@@ -3,11 +3,9 @@ package uk.ac.aston.jpd.group41.model;
 import java.util.Random;
 
 import uk.ac.aston.jpd.group41.people.Person;
-import uk.ac.aston.jpd.group41.textview.TextView;
 
 /**
- * This {@code Simulation} class is the class that holds the all the elements to
- * be simulated
+ * Holds the all the elements to be simulated
  * 
  * @author Bal
  * @version 1.0
@@ -15,80 +13,77 @@ import uk.ac.aston.jpd.group41.textview.TextView;
  */
 
 public class Simulation {
-	private static int tick = 0;
+	
+	private int tick = 0;
 	private Building building;
 	private PersonGenerator personGen;
 	private Stats stats;
-	private double p = 0.005;
-	private double q = 0.01;
+	private double p = 0.001;
+	private double q = 0.002;
 	private Random rnd;
 	private int numOfFloors = 7;
-	private boolean ticking = false;
-	private int tickView = 0;
 
+	
 	/**
 	 * Constructs a simulation element, holds a Random object that will be used to
 	 * generate people, this value should be passed with a seed
 	 * 
-	 * @param rnd A Random object
+	 * @param rnd a Random object to be used throughout the simulation
 	 */
-
 	public Simulation(Random rnd) {
 		this.rnd = rnd;
 		this.building = new Building(numOfFloors, 1, this);
-		this.personGen = new PersonGenerator(this, q);
+		this.personGen = new PersonGenerator(this, q,rnd);
 		personGen.createDeveloper(10);
 		personGen.createEmployeeNotDevelopers(10);
 		// this.stats = new Stats(this);
 	}
 
+	
 	/**
-	 * Arrive adds a person into the simulation
+	 * Adds a person to the simulation 
 	 * 
-	 * @param p Instance of Person
+	 * @param p represents the Person to be added
 	 */
 	public void arrive(Person p) {
 		building.arrive(p);
 		// stats.arrive(c);
 	}
 
+	
 	/**
-	 * Exits a person from the simulation
+	 * Removes a person from the simulation when the person leaves
 	 * 
-	 * @param p Instance of Person
+	 * @param p represents the Person who wants to leave
 	 */
 	public void leave(Person p) {
 		building.leave(p); // needs to take out a person not empty array
 	}
 
+	
 	/**
-	 * Tick is the tick of the simulation ticking other elements that need to be
-	 * ticked
+	 * Ticks the other elements of the simulation that need to be ticked
+	 * 
 	 */
 	public void tick() {
 		personGen.tick();
 		building.tick();
-		this.getBuilding().getLifts();
 	}
 
+	
+	/**
+	 * Adds a tick to the tick of the simulation
+	 */
 	public void addTick() {
 		if(getTick() != 2880) {
 			tick++;
-			ticking= true;
 		} 
 	}
 	
-	public void addTickView() {
-		if(ticking) {
-			tickView++;
-		}
-		ticking = false;
-	}
 	
-	public int getTickView() {
-		return tickView;
-	}
-	
+	/**
+	 * Reduces a tick from the simulation tick
+	 */
 	public void reduceTick() {
 		tick -= 1;
 	}
@@ -96,12 +91,13 @@ public class Simulation {
 	/**
 	 * Returns the current tick of the simulation
 	 * 
-	 * @return Int value
+	 * @return an integer value representing the current tick of the simulation
 	 */
 	public int getTick() {
 		return tick;
 	}
 
+	
 	/**
 	 * Returns the current {@code Building} being used in the simulation
 	 * 
@@ -111,6 +107,7 @@ public class Simulation {
 		return building;
 	}
 
+	
 	/**
 	 * Return the {@code PersonGenerator} of the simulation
 	 * 
@@ -120,42 +117,47 @@ public class Simulation {
 		return personGen;
 	}
 
+	
 	/**
-	 * Sets the probability P for the current simulation run
+	 * Sets the probability p, which is the probability of people changing floors
 	 * 
-	 * @param p Double value
+	 * @param p  a double value representing the value of p
 	 */
 	public void setP(double p) {
 		this.p = p;
 	}
 
+	
 	/**
-	 * Sets the probability Q for the current simulation run
+	 * Sets the probability q, which is the probability of the clients entering the building
 	 * 
-	 * @param q Double value
+	 * @param q a double value representing the value of q
 	 */
 	public void setQ(double q) {
 		this.q = q;
 	}
 
+	
 	/**
-	 * Returns the current probability being used for P
+	 * Returns the probability p being used in the current simulation
 	 * 
-	 * @return Double value
+	 * @return a double value representing the value of p
 	 */
 	public double getP() {
 		return p;
 	}
 
+	
 	/**
-	 * Returns the current probability being used for Q
+	 * Returns the probability q being used in the current simulation
 	 * 
-	 * @return Double value
+	 * @return a double value representing the value of q
 	 */
 	public double getQ() {
 		return q;
 	}
 
+	
 	/**
 	 * Returns the current {@code Stats} in the simulation
 	 * 
@@ -165,52 +167,37 @@ public class Simulation {
 		return stats;
 	}
 
+	
 	/**
 	 * Returns the current Random object being used in the simulation
 	 * 
-	 * @return Random
+	 * @return a Random object
 	 */
 	public Random getRandom() {
 		return rnd;
 	}
 
+	
 	/**
-	 * Returns the amount of floors set in the building
+	 * Returns the number of floors set in the building
 	 * 
-	 * @return Int value
+	 * @return an integer value representing the number of floors
 	 */
 	public int getNumOfFloors() {
 		return numOfFloors;
-	} // This shouldn't be here
-
-	/**
-	 * Number of floors to be set in the building
-	 * 
-	 * @param numOfFloors Int value
-	 */
-	public void setNumOfFloors(int numOfFloors) {
-		this.numOfFloors = numOfFloors;
 	} 
 	
-	/*
+	
+	/**
 	 * Runs the simulation for a given time 
 	 * 
-	 * @param totalBuildingSimulationTime this is the time for how long the simulation runs
+	 * @param totalBuildingSimulationTime is an integer representing the amount of time
+	 * for which the simulation will run
 	 */
-	 public void run(int totalBuildingSimulationTime) {
-		TextView view = new TextView();
-		/*while(getTick() < totalBuildingSimulationTime) {
-			//tick();
-		}*/
-		for (int i = 0; i < totalBuildingSimulationTime; i++) {
+	public void run(int totalBuildingSimulationTime) {
+		while(tick < totalBuildingSimulationTime) {
 			tick();
-			addTickView();
-			view.display(this);
+			System.out.println("Simulation Tick " + tick);
 		}
-		
-		/*for(int i = 0; i < totalBuildingSimulationTime; i++) {
-			System.out.println("Simulation Tick " + getTick());
-			view.display(this);
-		}*/
 	}
 }

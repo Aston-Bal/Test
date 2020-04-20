@@ -2,6 +2,7 @@ package uk.ac.aston.jpd.group41.people;
 
 import uk.ac.aston.jpd.group41.model.Simulation;
 
+
 /**
  * Represents a Person in the building.
  * 
@@ -17,14 +18,14 @@ public abstract class Person {
 	private int targetFloor;
 	private int currentFloor;
 	protected Simulation simulation;
-	private boolean hasReached;
 
+	
 	/**
 	 * Creates a person with a unique ID and space that it occupies
 	 * 
-	 * @param space       is the space the person occupies in the lift
-	 * @param ID          is the unique ID of the person
-	 * @param s 		Simulation of the main program
+	 * @param space is an integer representing the space the person occupies in the lift
+	 * @param ID is a String representing the unique ID of the person
+	 * @param s is the Simulation of the main program
 	 */
 	public Person(String ID, int space, Simulation s) {
 		this.space = space;
@@ -32,24 +33,27 @@ public abstract class Person {
 		this.simulation = s;
 	}
 
+	
 	/**
 	 * Returns the person's ID
 	 * 
-	 * @return A string representing the ID
+	 * @return a String value representing the ID
 	 */
 	public String getID() {
 		return ID;
 	}
 
+	
 	/**
 	 * Returns the space the person occupies in the lift
 	 * 
-	 * @return An integer representing the space
+	 * @return an integer value representing the space the person occupies in the lift
 	 */
 	public int getSpace() {
 		return space;
 	}
 
+	
 	/**
 	 * Returns the simulation of the program
 	 * 
@@ -59,64 +63,52 @@ public abstract class Person {
 		return simulation;
 	}
 
+	
 	/**
 	 * Returns the next target floor for the person
 	 * 
-	 * @return An integer representing the target floor
+	 * @return An integer representing the next target floor
 	 */
 	public int getTargetFloor() {
 		return targetFloor;
 	}
 
+	
 	/**
 	 * Sets the next target floor for the person
 	 * 
-	 * @param targetFloor contains the next target floor
+	 * @param targetFloor  is an integer containing the next target floor
 	 */
 	protected void setTargetFloor(int targetFloor) {
 		this.targetFloor = targetFloor;
 	}
 
+	
 	/**
 	 * Does what a single tick should do for a person based on the type of person
-	 * @return boolean return if they are ticking or not
+	 * 
+	 * @return a boolean value indicating a change in their behaviour
 	 */
 	public abstract boolean tick();
 
-	/*
-	 * returns current floor
+	
+	/**
+	 * Returns current floor the person is in
 	 * 
-	 * @return integer representing the value of current floor
+	 * @return an integer value representing the current floor of the person
 	 */
 	public int getCurrentFloor() {
 		return currentFloor;
 	}
 
-	/*
-	 * sets the current floor number
+	
+	/**
+	 * Sets the current floor number the person is in
 	 * 
-	 * @param currentFloor takes an integer as the new currentFloor value
+	 * @param currentFloor is an integer representing the current floor the person is in
 	 */
 	public void setCurrentFloor(int currentFloor) {
 		this.currentFloor = currentFloor;
-	}
-
-	/*
-	 * returns hasReached value
-	 * 
-	 * @return boolean representing the value of hasReached
-	 */
-	public boolean isHasReached() {
-		return hasReached;
-	}
-
-	/*
-	 * sets the value has Reached
-	 * 
-	 * @param hasReached is the new value of hasReached
-	 */
-	public void setHasReached(boolean hasReached) {
-		this.hasReached = hasReached;
 	}
 
 }

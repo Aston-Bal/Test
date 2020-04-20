@@ -12,12 +12,12 @@ import uk.ac.aston.jpd.group41.people.EmployeeNotDeveloper;
 import uk.ac.aston.jpd.group41.people.MaintenanceCrew;
 import uk.ac.aston.jpd.group41.people.Person;
 
-/*
- * Generates a Floor {@code Floor}
+/**
+ * Represents a Floor in the Building{@code Floor}
  * 
  * @author Nishika 
  * @author Marlon 
- * @version 4.0 
+ * @version 4.1.0 
  * @since 1.0 
  */
 public class Floor {
@@ -26,85 +26,53 @@ public class Floor {
 	private Queue<Person> waitingList = new LinkedList<>();
 	private int floorNum;
 
-	/*
-	 * Creates a Floor and it takes a specific amount of floors to generate
-	 * @param floorNum takes the number of Floors to create 
+	/**
+	 * Creates a Floor with the floor number
+	 * @param floorNum is an integer representing the floor number of the floor
 	 */
 	public Floor(int floorNum) {
 		this.floorNum = floorNum;
 	}
 	
-	/*
-	 * returns the number of Floors
+	/**
+	 * Returns the floor number of the Floor
 	 * 
-	 * @return an int, representing the quantity of floors
+	 * @return an integer representing the floor number
 	 */
 	public int getFloorNumber() {
 		return floorNum;
 	}
 
-	/*
-	 * Transfers people from the Lift to the Floor
+	/**
+	 * Transfers a person to the Floor
+	 * Puts them into the working list of the Floor
 	 * 
-	 * @param people receives the Floor list
+	 * @param p represents the Person to be transferred to the Floor
 	 */
 	public void moveToFloor(Person p) {
-		//p.setCurrentFloor(p.getTargetFloor());
 		workingList.add(p);
 	}
 
-	/*
-	 * It transfers people from the working list to the floor queue
+	/**
+	 * Transfers a person from the working list to the floor's waiting queue for the lift
 	 * 
-	 * @param p receives the person to move
+	 * @param p represents the Person to be transferred to the waiting queue 
 	 */
 	public void moveToQueue(Person p) {
+		//When a person enters from the ground floor
+		if(workingList.size()>0) {
+			removePerson(p);
+		}
 		waitingList.add(p);
-		if(workingList.size()>0)
-		workingList.remove(p);
-	}
-	
-	public List<Person> getWorkingList(){
-		return workingList;
-	}
-	
-	public void workingListDisplay(){
-		int written = 0;
-		boolean activated = false;
-		for(Person p : workingList) {
-			System.out.print(p.getID());
-			written++;
-			if(written > 10 && activated == false) {
-				System.out.println();
-				activated = true;
-			}
-		}
-		System.out.println();
-	}
-	
-	public void waitingListDisplay() {
-		int written = 0;
-		boolean activated = false;
-		for(Person p: waitingList) {
-			System.out.print(p.getID());
-			written++;
-			if(written > 10 && activated == false) {
-				System.out.println();
-				activated = true;
-			}
-		}
-		System.out.println();
-	}
-	
-	public Queue<Person> getWaitingList(){
-		return waitingList;
 	}
 
-	/*
-	 * It returns a List of people from the queue to the lift
+
+	/**
+	 * Returns a List of people to be transferred from the queue to the lift
+	 * Based on the space available in the lift
 	 * 
-	 * @param availableSpace available space on the lift
-	 * @return List of people that wants to go in the Lift
+	 * @param availableSpace is an integer representing available space on the lift
+	 * @return List of people to be transferred to the Lift
 	 */
 	public List<Person> moveToLift(int availableSpace){
 		List<Person> people = new ArrayList<Person>();
@@ -126,11 +94,11 @@ public class Floor {
 		return people;
 	}
 
-	/*
-	 * Requests the floor, if there are people waiting when the floor has left.
+	
+	/**
+	 * Requests the floor, if there are people waiting when the lift has left.
 	 */
 	public int request() {
-
 		if (waitingList.size() > 0) {
 			return floorNum;
 		} else {
@@ -138,25 +106,27 @@ public class Floor {
 		}
 	}
 
-	/*
-	 * Ticks all the people working to see if they want to leave and if they want to leave, they are moved to the queue 
+	
+	/**
+	 * Ticks all the people working to check if they want to leave or change floors
+	 * If they want to leave or change floors, they are moved to the queue waiting for the Lift
 	 * 
 	 * @see changeFloorProbablity()
 	 */
 	public void tick() {
 		List<Person> people = new ArrayList<>();
 		for (Person p : workingList) {
-			boolean floor = false;
+			boolean changeFloor = false;
 			if (p instanceof Client) {
-				floor = ((Client) p).tick();
+				changeFloor = ((Client) p).tick();
 			} else if (p instanceof Developer) {
-				floor = ((Developer) p).tick();
+				changeFloor = ((Developer) p).tick();
 			} else if (p instanceof EmployeeNotDeveloper) {
-				floor = ((EmployeeNotDeveloper) p).tick();
+				changeFloor = ((EmployeeNotDeveloper) p).tick();
 			} else if (p instanceof MaintenanceCrew) {
-				floor = ((MaintenanceCrew) p).tick();
+				changeFloor = ((MaintenanceCrew) p).tick();
 			}
-			if (floor == true && p.getTargetFloor() != floorNum) {
+			if (changeFloor == true && p.getTargetFloor() != floorNum) {
 				people.add(p);
 			}
 		}
@@ -165,12 +135,13 @@ public class Floor {
 		}
 	}
 
-	/*
-	 * Removes the person from the floor 
+	
+	/**
+	 * Removes the person from the waiting queue or the working list of the floor
 	 * 
-	 * @param p takes the person who is going to leave
+	 * @param p represents the Person to be removed
 	 */
-	public void leave(Person p) {
+	public void removePerson(Person p) {
 		if (workingList.contains(p))
 			workingList.remove(p);
 		else if (waitingList.contains(p))
