@@ -2,8 +2,10 @@ package uk.ac.aston.jpd.group41.people;
 
 import uk.ac.aston.jpd.group41.model.Simulation;
 
-/*
- * Generates a MaintenanceCrew 
+/**
+ * Represents a Maintenance Crew 
+ * 
+ * Extends the Person class 
  * 
  * @author Bal
  * @author Marlon
@@ -13,23 +15,27 @@ import uk.ac.aston.jpd.group41.model.Simulation;
 
 public class MaintenanceCrew extends Person {
 
-	/*
-	 * It creates a Maintenance Crew and sets the desired Floor.
+	
+	/**
+	 * Creates a Maintenance Crew and sets the desired Floor.
 	 * 
-	 * @param ID sets the ID
-	 * 
-	 * @param space sets how much they occupy
-	 * 
-	 * @param simulation is the current time simulation
-	 **/
+	 * @param ID is String representing the ID of the Maintenance Crew
+	 * @param space is an integer representing the space occupied by the Maintenance Crew in the lift
+	 * @param simulation represents the main Simulation of the program
+	 */
 	public MaintenanceCrew(String ID, int space, Simulation simulation) {
 		super(ID, space, simulation);
 		setTargetFloor(simulation.getNumOfFloors()-1);
 	}
 
-	/*
-	 * Once they have entered the building, it generates a random meeting time for
-	 * the maintenance crew and when it finishes, they leave.
+	
+	/**
+	 * After reaching the target floor, generates a random time to stay in the building
+	 * After the time is over, they leave the building
+	 * 
+	 * @see Person#tick()
+	 * 
+	 * @return a boolean value depending on whether they are leaving or not
 	 */
 	public boolean tick() {
 		int tickStarted = super.simulation.getTick();

@@ -2,18 +2,15 @@ package uk.ac.aston.jpd.group41.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import uk.ac.aston.jpd.group41.people.Person;
-import uk.ac.aston.jpd.group41.people.MaintenanceCrew;
 
 /**
  * Represents a lift with a specific capacity {@code Lift}
  * 
  * @author nishika
- * @version 2.1.0
+ * @version 3.1.0
  * @since 1.0.0
  */
 public class Lift {
@@ -30,11 +27,12 @@ public class Lift {
 	private Simulation simulation;
 	private boolean peopleEntering;
 	private boolean peopleLeaving;
+	private Lift.LiftMovement movement;
 
+	
 	/**
 	 * Creates a lift with a specific space and indicating the maximum number of
 	 * floors in the building
-	 * <p>
 	 * The lift is on the ground floor when it is created and is empty
 	 * 
 	 * @param space      space is an integer representing the capacity of the lift
@@ -53,8 +51,10 @@ public class Lift {
 		peopleEntering = false;
 		peopleLeaving = false;
 		this.simulation = simulation;
+		movement =  new LiftMovement();
 	}
 
+	
 	/**
 	 * Returns the the current floor the lift is at
 	 * 
@@ -64,6 +64,7 @@ public class Lift {
 		return currentFloor;
 	}
 
+	
 	/**
 	 * Returns the available space in the lift
 	 * 
@@ -73,21 +74,12 @@ public class Lift {
 		return availableSpace;
 	}
 
-	/**
-	 * People entering the lift if the doors are open and there is space available
-	 * 
-	 * @param people is a HashMap representing the people entering and the floors
-	 *               they want to go to
-	 */
 	
-	public String doorStage() {
-		if(doorClosed) {
-			return "Door closed";
-		} else {
-			return "Door opened";
-		}
-	}
-
+	/**
+	 * Person entering the lift if the doors are open and there is space available
+	 * 
+	 * @param p is a Person representing the person entering the lift
+	 */
 	public void arrive(Person p) {
 		if (availableSpace >= p.getSpace() && !doorClosed && p != null) {
 			int targetFloorForPerson = p.getTargetFloor();
@@ -97,10 +89,11 @@ public class Lift {
 				targetFloors.add(targetFloorForPerson);
 			}
 			availableSpace = availableSpace - p.getSpace();
-			
+			System.out.println("I have arrived inside the lift " + p.getID() + " " + availableSpace);
 		}
 	}
 
+	
 	/**
 	 * People leaving the lift when they have reached their target floors
 	 * 
@@ -112,6 +105,7 @@ public class Lift {
 			int targetFloorForPerson = p.getTargetFloor();
 			if (targetFloorForPerson == currentFloor) {
 				peopleLeaving1.add(p);
+				p.setCurrentFloor(targetFloorForPerson);
 				availableSpace = availableSpace + p.getSpace();
 				targetFloors.remove((Integer) targetFloorForPerson);
 				peopleLeaving = true;
@@ -121,16 +115,16 @@ public class Lift {
 			peopleInLift.remove(p);
 		}
 		for (Person p : peopleLeaving1) {
-			//System.out.println("We have left " + p.getID());
+			System.out.println("We have left " + p.getID());
 		}
 		peopleEnteringOrLeaving();
 		return peopleLeaving1;
 	}
-	/*
-	 * Useful for testing for(Person p: people) {
-	 * System.out.println("We have left "+p.getID()); }
-	 */
 
+	
+	/**
+	 * Ticking the simulation when people are entering or leaving
+	 */
 	public void peopleEnteringOrLeaving() {
 		if (peopleEntering) {
 			simulation.addTick();
@@ -140,70 +134,117 @@ public class Lift {
 		} else if (peopleEntering == true && peopleLeaving == true) {
 			simulation.reduceTick();
 		}
-		//System.out.println("Current tick: " + simulation.getTick());
+		System.out.println("Current tick: " + simulation.getTick());
 		peopleEntering = false;
 		peopleLeaving = false;
 	}
 
+	
 	/**
 	 * The doors of the lift closing
 	 */
 	public void doorClosed() {
 		doorClosed = true;
 		hasArrived = false;
-		//System.out.println("Doors closing");
+		System.out.println("Doors closing");
 		simulation.addTick();
-		//System.out.println("Current tick: " + simulation.getTick());
+		System.out.println("Current tick: " + simulation.getTick());
 	}
 
+	
 	/**
 	 * The doors of the lift opening if the lift has arrived on its target floor
 	 */
 	public void doorOpened() {
 		if (hasArrived)
 			doorClosed = false;
-		//System.out.println("Doors opening");
+		System.out.println("Doors opening");
 	}
+	
 
 	/**
-	 * Moving the lift If there are requests it will go to the respective floors,
-	 * Otherwise the lift would go to the ground floor
+	 * Does what a tick of elevator should do Lift 
+	 * Does different things in different ticks
+	 * 
+	 * @param task is a String representing the particular task that the lift should
+	 *             perform in that tick
 	 */
-	public void move() {
-		direction();
-		int targetFloor = getNextTargetFloor();
-		if (currentFloor < targetFloor) {
-			movingUp = true;
-			while (doorClosed == true) {
-				currentFloor++;
-				simulation.addTick();
-				//System.out.println("Currently in: " + currentFloor + " " + simulation.getTick());
-				if (currentFloor == targetFloor) {
-					hasArrived = true;
-					//System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
-						//	+ simulation.getTick());
-					break;
-				}
-			}
-		} else if (currentFloor > targetFloor) {
-			movingUp = false;
-			while (doorClosed == true) {
-				currentFloor--;
-				simulation.addTick();
-				//System.out.println("Currently in:" + currentFloor + " " + simulation.getTick());
-				;
-				if (currentFloor == targetFloor) {
-					hasArrived = true;
-				//	System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
-					//		+ simulation.getTick());
-					break;
-				}
-			}
+	public void tick(String task) {
+		if (task.equals("open door")) {
+			doorOpened();
+			
+		}
+		else if (task.equals("close door")) {
+			doorClosed();
+		}
+		else if (task.equals("move")) {
+			simulation.addTick();
+			movement.move();
 		}
 	}
 
 	/**
-	 * Direction to do
+	 * Accepts a request from any floor
+	 * 
+	 * @param floor is an integer representing the floor the request came from
+	 */
+	public void addRequest(int floor) {
+		if (floor > -1 && floor < maxFloor && !targetFloors.contains(floor))
+			targetFloors.add(floor);
+	}
+	
+	
+	/**
+	 * Member class of Lift 
+	 * Deals with the movement of the lift
+	 * Determining direction, getting the target floors and moving
+	 * @author nishi
+	 * @since 5.0.0
+	 * @version 1.0
+	 *
+	 */
+	private class LiftMovement{
+		
+		/**
+		 * Moving the lift if there are requests it will go to the respective floors,
+		 * Otherwise the lift would go to the ground floor
+		 */
+		public void move() {
+			direction();
+			int targetFloor = getNextTargetFloor();
+			if (currentFloor < targetFloor) {
+				movingUp = true;
+				while (doorClosed == true) {
+					currentFloor++;
+					simulation.addTick();
+					System.out.println("Currently in: " + currentFloor + " " + simulation.getTick());
+					if (currentFloor == targetFloor) {
+						hasArrived = true;
+						System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
+								+ simulation.getTick());
+						break;
+					}
+				}
+			} else if (currentFloor > targetFloor) {
+				movingUp = false;
+				while (doorClosed == true) {
+					currentFloor--;
+					simulation.addTick();
+					System.out.println("Currently in:" + currentFloor + " " + simulation.getTick());
+					;
+					if (currentFloor == targetFloor) {
+						hasArrived = true;
+						System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
+								+ simulation.getTick());
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Determines the direction of the lift
 	 */
 	public void direction() {
 		if (currentFloor == maxFloor) {
@@ -232,19 +273,15 @@ public class Lift {
 			}
 		}
 	}
-
+	
 	/**
 	 * Gets the next target floor for the lift based on whether its moving up or
 	 * down
 	 * 
 	 * @return an integer representing the next target floor
 	 */
-
 	public int getNextTargetFloor() {
 		int targetFloor = 0;
-		/*for (int i = 0; i < targetFloors.size(); i++) {
-			System.out.println("Target Floors: " + targetFloors.get(i));
-		}*/
 		List<Integer> floorsUp = new ArrayList<>();
 		List<Integer> floorsDown = new ArrayList<>();
 
@@ -266,38 +303,7 @@ public class Lift {
 			Collections.sort(floorsDown);
 			targetFloor = floorsDown.get(floorsDown.size() - 1);
 		}
-		//System.out.println("Target floor is: " + targetFloor);
+		System.out.println("Target floor is: " + targetFloor);
 		return targetFloor;
-	}
-
-	/**
-	 * Does what a tick of elevator should do Lift does different things in
-	 * different ticks
-	 * 
-	 * @param task is a String representing the particular task that the lift should
-	 *             perform in that tick
-	 */
-	public void tick(String task) {
-		if (task.equals("open door")) {
-			doorOpened();
-			
-		}
-		else if (task.equals("close door")) {
-			doorClosed();
-		}
-		else if (task.equals("move")) {
-			simulation.addTick();
-			move();
-		}
-	}
-
-	/**
-	 * Accepts a request from any floor
-	 * 
-	 * @param floor is an integer representing the floor the request came from
-	 */
-	public void addRequest(int floor) {
-		if (floor > -1 && floor < maxFloor && !targetFloors.contains(floor))
-			targetFloors.add(floor);
 	}
 }

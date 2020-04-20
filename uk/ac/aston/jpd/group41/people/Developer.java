@@ -2,8 +2,10 @@ package uk.ac.aston.jpd.group41.people;
 
 import uk.ac.aston.jpd.group41.model.Simulation;
 
-/*
- * Creates a developer 
+/**
+ * Represents a developer 
+ * 
+ * Extends the Person class
  * 
  * @author Bal
  * @author Marlon
@@ -13,13 +15,11 @@ import uk.ac.aston.jpd.group41.model.Simulation;
 
 public class Developer extends Person {
 
-	/*
+	/**
 	 * Creates a Developer with its own ID and space.
 	 * 
-	 * @param ID sets the ID for the Developer
-	 * 
-	 * @param space sets how much it occupies
-	 * 
+	 * @param ID is a String representing the ID for the Developer
+	 * @param space is an integer representing the space occupied by the developer in the lift
 	 * @param simulation is the current simulation of the program
 	 */
 	public Developer(String ID, int space, Simulation s) {
@@ -27,7 +27,7 @@ public class Developer extends Person {
 		setTargetFloor((int)Math.floor(simulation.getNumOfFloors()/2) + simulation.getRandom().nextInt(simulation.getNumOfFloors()/2));
 	}
 
-	/*
+	/**
 	 * Ticks the developer to see if it wants to change floor, returns true whether
 	 * they want to change floor and Overrides from person
 	 * 

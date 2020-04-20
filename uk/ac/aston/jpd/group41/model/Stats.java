@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import uk.ac.aston.jpd.group41.people.Person;
-//import uk.ac.aston.jpd.post.model.CustomerWait;
+import uk.ac.aston.jpd.post.model.CustomerWait;
 
 /*
  * Represents the Stats simulation {@code Stats}
@@ -14,7 +14,6 @@ import uk.ac.aston.jpd.group41.people.Person;
  * @version 1.1
  * @since 1.0
  */
-
 public class Stats {
 
 	private double floorProbability_P;
@@ -44,12 +43,12 @@ public class Stats {
 		int nSamples = 0;
 		double total = 0;
 
-		/*for (PersonWait pw : waitTime.values()) {
+		for (PersonWait pw : waitTime.values()) {
 			if (pw.getServingStartedTick() != null) {
 				nSamples++;
 				total += pw.getServingStartedTick() - pw.getArrivalTick();
 			}
-		}*/
+		}
 
 		if (nSamples > 0) {
 			return total / nSamples;
@@ -74,5 +73,4 @@ public class Stats {
 	}
 
 }
-
 
