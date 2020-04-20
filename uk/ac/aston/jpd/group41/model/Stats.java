@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import uk.ac.aston.jpd.group41.people.Client;
 import uk.ac.aston.jpd.group41.people.Person;
-import uk.ac.aston.jpd.post.model.CustomerWait;
+//import uk.ac.aston.jpd.post.model.CustomerWait;
 
 /*
  * Represents the Stats simulation {@code Stats}
@@ -15,6 +14,7 @@ import uk.ac.aston.jpd.post.model.CustomerWait;
  * @version 1.1
  * @since 1.0
  */
+
 public class Stats {
 
 	private double floorProbability_P;
@@ -36,30 +36,20 @@ public class Stats {
 		this.random = simulation.getRandom();
 	}
 
-	public void arriveinLift(Person p) {
+	public void arrive(Person p) {
 	waitTime.put(p,new PersonWait(p,simulation.getTick()));
 	}
-	public void exitLift(Person p) {
-	waitTime.get(p).setExitLiftTick(simulation.getTick());
-	}
-	/*public void clientAngry(Client c) {
-		int time;
-		time = waitTime.get(c).getExitLiftTick() -  waitTime.get(c).getEnterLiftTick();
-		if (c.isPatient()) {
-			
-		}
-	}*/
 	
 	public double getAverageWaitingTime() {
 		int nSamples = 0;
 		double total = 0;
 
-		for (PersonWait pw : waitTime.values()) {
-			if (pw.getExitLiftTick() != null) {
+		/*for (PersonWait pw : waitTime.values()) {
+			if (pw.getServingStartedTick() != null) {
 				nSamples++;
-				total += pw.getExitLiftTick() - pw.getEnterLiftTick();
+				total += pw.getServingStartedTick() - pw.getArrivalTick();
 			}
-		}
+		}*/
 
 		if (nSamples > 0) {
 			return total / nSamples;
@@ -70,18 +60,19 @@ public class Stats {
 	
 	private class PersonWait {
 		private final Person person;
-		private final int enterLiftTick;
-		private Integer exitLiftTick;
+		private final int ArrivalTick;
+		private Integer inLift;
 		
-		public PersonWait(Person person,int enterLiftTick) {
+		public PersonWait(Person person,int ArrivalTick) {
 			this.person = person;
-			this.enterLiftTick = enterLiftTick;
+			this.ArrivalTick = ArrivalTick;
 		}
 		public Person getPerson() {return person;}
-		public int getEnterLiftTick() {return enterLiftTick;}
-		public void setExitLiftTick(int inLift) {this.exitLiftTick = inLift;}
-		public Integer getExitLiftTick() {return exitLiftTick;}
+		public Integer getArrivalTick() {return ArrivalTick;}
+		public void setInLift(int inLift) {this.inLift = inLift;}
+		public int getInLift() {return inLift;}
 	}
 
 }
+
 

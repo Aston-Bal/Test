@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import uk.ac.aston.jpd.group41.people.Person;
-import  uk.ac.aston.jpd.group41.model.Floor;
+import uk.ac.aston.jpd.group41.model.Floor;
 
 /**
  * Represents the building containing the floors and the lifts {@code Building}}
@@ -22,21 +22,23 @@ public class Building {
 	private Lift[] lifts;
 	private List<Person> peopleInBuilding = new ArrayList<>();
 	private int currentFloorOfLift;
+	private int numLifts;
 
 	/**
-	 * Creates a building with specific number of floors and lifts 
+	 * Creates a building with specific number of floors and lifts
 	 * 
-	 * @param numFloors  This is the amount of floors to be created in the Building
-	 * @param numLifts   This is the amount of Lifts to be created in the Building
+	 * @param numFloors This is the amount of floors to be created in the Building
+	 * @param numLifts  This is the amount of Lifts to be created in the Building
 	 */
 	public Building(int numFloors, int numLifts, Simulation simulation) {
 		floors = new Floor[numFloors];
 		lifts = new Lift[numLifts];
+		this.numLifts = numLifts;
 		for (int i = 0; i < numFloors; i++) {
 			floors[i] = new Floor(i);
 		}
 		for (int i = 0; i < numLifts; i++) {
-			lifts[i] = new Lift(4, numFloors-1, simulation);
+			lifts[i] = new Lift(4, numFloors - 1, simulation);
 		}
 	}
 
@@ -49,6 +51,24 @@ public class Building {
 	public void arrive(Person p) {
 		peopleInBuilding.add(p);
 		floors[0].moveToQueue(p);
+	}
+
+	/*
+	 * 
+	 */
+	public Lift[] getLifts() {
+		return lifts;
+	}
+
+	public void getLiftCurrentFloor() {
+		for (int i = 0; i < numLifts; i++) {
+			System.out.println(
+					"Lift " + i + " is at floor: " + lifts[i].getCurrentFloor() + " , " + lifts[i].doorStage());
+		}
+	}
+	
+	public Floor[] getFloors() {
+		return floors;
 	}
 
 	/**
@@ -68,30 +88,24 @@ public class Building {
 		currentFloorOfLift = lifts[0].getCurrentFloor();
 		int availableSpace = lifts[0].getAvailableSpace();
 		List<Person> peopleToTransfer = floors[currentFloorOfLift].moveToLift(availableSpace);
-		for(Person p: peopleToTransfer) {
+		for (Person p : peopleToTransfer) {
 			lifts[0].arrive(p);
 		}
 		lifts[0].peopleEnteringOrLeaving();
-		/*currentFloorOfLift = lifts[0].getCurrentFloor();
-		int availableSpace = lifts[0].getAvailableSpace();
-		List<Person> peopleToTransfer = floors[currentFloorOfLift].moveToLift(availableSpace);
-		//peopleToTransfer.forEach(p -> System.out.println(p.getID()));
-		Map<Integer, List<Person>> peopleToTransferWithFloors = new HashMap<>();
-		for(Person p: peopleToTransfer) {
-			int floorForPerson = p.getTargetFloor();
-			List<Person> people = new ArrayList<>();
-			for(int i: peopleToTransferWithFloors.keySet()) {
-				if(i == floorForPerson) {
-					people = peopleToTransferWithFloors.get(floorForPerson);
-					break;
-				}
-			}
-			people.add(p);
-			peopleToTransferWithFloors.put(p.getTargetFloor(),people);
-		}
-		
-		lifts[0].arrive(peopleToTransferWithFloors);
-		*/
+		/*
+		 * currentFloorOfLift = lifts[0].getCurrentFloor(); int availableSpace =
+		 * lifts[0].getAvailableSpace(); List<Person> peopleToTransfer =
+		 * floors[currentFloorOfLift].moveToLift(availableSpace);
+		 * //peopleToTransfer.forEach(p -> System.out.println(p.getID())); Map<Integer,
+		 * List<Person>> peopleToTransferWithFloors = new HashMap<>(); for(Person p:
+		 * peopleToTransfer) { int floorForPerson = p.getTargetFloor(); List<Person>
+		 * people = new ArrayList<>(); for(int i: peopleToTransferWithFloors.keySet()) {
+		 * if(i == floorForPerson) { people =
+		 * peopleToTransferWithFloors.get(floorForPerson); break; } } people.add(p);
+		 * peopleToTransferWithFloors.put(p.getTargetFloor(),people); }
+		 * 
+		 * lifts[0].arrive(peopleToTransferWithFloors);
+		 */
 	}
 
 	/**
@@ -100,7 +114,7 @@ public class Building {
 	private void transferToFloorFromLift() {
 		currentFloorOfLift = lifts[0].getCurrentFloor();
 		List<Person> peopleToTransfer = lifts[0].leave();
-		for(Person p: peopleToTransfer) {
+		for (Person p : peopleToTransfer) {
 			floors[currentFloorOfLift].moveToFloor(p);
 		}
 	}
@@ -109,7 +123,7 @@ public class Building {
 	 * Performs all the functionalities that a single tick of building should do
 	 */
 	public void tick() {
-		for (Floor f: floors) {
+		for (Floor f : floors) {
 			f.tick();
 		}
 		lifts[0].tick("open door");
@@ -117,13 +131,13 @@ public class Building {
 		transferToLiftFromFloor();
 		lifts[0].tick("close door");
 		lifts[0].addRequest(floors[currentFloorOfLift].request());
-		/*if(floors[currentFloorOfLift].request()>-1) {
-			request = true;
-			floorRequested = currentFloorOfLift;
-		}*/
+		/*
+		 * if(floors[currentFloorOfLift].request()>-1) { request = true; floorRequested
+		 * = currentFloorOfLift; }
+		 */
 		lifts[0].tick("move");
-		//if(request) {
-		//lifts[0].addRequest(floors[floorRequested].request());
-		//}
+		// if(request) {
+		// lifts[0].addRequest(floors[floorRequested].request());
+		// }
 	}
 }

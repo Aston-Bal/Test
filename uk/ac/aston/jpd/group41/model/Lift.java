@@ -79,18 +79,25 @@ public class Lift {
 	 * @param people is a HashMap representing the people entering and the floors
 	 *               they want to go to
 	 */
+	
+	public String doorStage() {
+		if(doorClosed) {
+			return "Door closed";
+		} else {
+			return "Door opened";
+		}
+	}
 
 	public void arrive(Person p) {
 		if (availableSpace >= p.getSpace() && !doorClosed && p != null) {
 			int targetFloorForPerson = p.getTargetFloor();
 			peopleInLift.add(p);
 			peopleEntering = true;
-			simulation.arriveInLift(p);
 			if (!targetFloors.contains(targetFloorForPerson)) {
 				targetFloors.add(targetFloorForPerson);
 			}
 			availableSpace = availableSpace - p.getSpace();
-			System.out.println("I have arrived inside the lift " + p.getID() + " " + availableSpace);
+			
 		}
 	}
 
@@ -112,8 +119,9 @@ public class Lift {
 		}
 		for (Person p : peopleLeaving1) {
 			peopleInLift.remove(p);
-			System.out.println("We have left " + p.getID());
-			simulation.exitLift(p);
+		}
+		for (Person p : peopleLeaving1) {
+			//System.out.println("We have left " + p.getID());
 		}
 		peopleEnteringOrLeaving();
 		return peopleLeaving1;
@@ -132,7 +140,7 @@ public class Lift {
 		} else if (peopleEntering == true && peopleLeaving == true) {
 			simulation.reduceTick();
 		}
-		System.out.println("Current tick: " + simulation.getTick());
+		//System.out.println("Current tick: " + simulation.getTick());
 		peopleEntering = false;
 		peopleLeaving = false;
 	}
@@ -143,9 +151,9 @@ public class Lift {
 	public void doorClosed() {
 		doorClosed = true;
 		hasArrived = false;
-		System.out.println("Doors closing");
+		//System.out.println("Doors closing");
 		simulation.addTick();
-		System.out.println("Current tick: " + simulation.getTick());
+		//System.out.println("Current tick: " + simulation.getTick());
 	}
 
 	/**
@@ -154,7 +162,7 @@ public class Lift {
 	public void doorOpened() {
 		if (hasArrived)
 			doorClosed = false;
-		System.out.println("Doors opening");
+		//System.out.println("Doors opening");
 	}
 
 	/**
@@ -169,11 +177,11 @@ public class Lift {
 			while (doorClosed == true) {
 				currentFloor++;
 				simulation.addTick();
-				System.out.println("Currently in: " + currentFloor + " " + simulation.getTick());
+				//System.out.println("Currently in: " + currentFloor + " " + simulation.getTick());
 				if (currentFloor == targetFloor) {
 					hasArrived = true;
-					System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
-							+ simulation.getTick());
+					//System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
+						//	+ simulation.getTick());
 					break;
 				}
 			}
@@ -182,12 +190,12 @@ public class Lift {
 			while (doorClosed == true) {
 				currentFloor--;
 				simulation.addTick();
-				System.out.println("Currently in:" + currentFloor + " " + simulation.getTick());
+				//System.out.println("Currently in:" + currentFloor + " " + simulation.getTick());
 				;
 				if (currentFloor == targetFloor) {
 					hasArrived = true;
-					System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
-							+ simulation.getTick());
+				//	System.out.println("Lift has arrived to the target floor: " + targetFloor + ", current tick: "
+					//		+ simulation.getTick());
 					break;
 				}
 			}
@@ -258,7 +266,7 @@ public class Lift {
 			Collections.sort(floorsDown);
 			targetFloor = floorsDown.get(floorsDown.size() - 1);
 		}
-		System.out.println("Target floor is: " + targetFloor);
+		//System.out.println("Target floor is: " + targetFloor);
 		return targetFloor;
 	}
 
