@@ -43,7 +43,7 @@ public class PersonGenerator {
 	 */
 	public void createClient() {
 		numOfClient++;
-		Person client = new Client("Client "+numOfClient,1,simulation);
+		Person client = new Client("C["+numOfClient + "] ",1,simulation);
 		simulation.arrive(client);
 		System.out.println("Client created "+numOfClient);
 	}
@@ -53,7 +53,7 @@ public class PersonGenerator {
 	 */
 	public void createMaintenanceCrew() {
 		numOfCrew++;
-		Person maintenanceCrew = new MaintenanceCrew("Maintenance Crew "+numOfCrew,4,simulation);
+		Person maintenanceCrew = new MaintenanceCrew("MC["+numOfCrew + "] ",4,simulation);
 		simulation.arrive(maintenanceCrew);
 		System.out.println("MC created "+numOfCrew);
 	}
@@ -65,9 +65,9 @@ public class PersonGenerator {
 	 */
 	public void createDeveloper(int quantity) {
 		for (int i = 0; i < quantity; i++) {
-			Developer developer = new Developer("Developer " + i, 1, simulation);
+			Developer developer = new Developer("D[" + i + "] ", 1, simulation);
 			simulation.arrive(developer);
-			System.out.println("Developer created " + i);
+			//System.out.println("Developer created " + i);
 		}
 	}
 
@@ -78,9 +78,9 @@ public class PersonGenerator {
 	 */
 	public void createEmployeeNotDevelopers(int quantity) {
 		for (int i = 0; i < quantity; i++) {
-			EmployeeNotDeveloper notDeveloper = new EmployeeNotDeveloper("Not Developer " + i, 1, simulation);
+			EmployeeNotDeveloper notDeveloper = new EmployeeNotDeveloper("ND[" + i + "] ", 1, simulation);
 			simulation.arrive(notDeveloper);
-			System.out.println("Not Developer created " + i);
+			//System.out.println("Not Developer created " + i);
 		}
 	}
 

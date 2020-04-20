@@ -63,7 +63,42 @@ public class Floor {
 		if(workingList.size()>0)
 		workingList.remove(p);
 	}
-
+	
+	public List<Person> getWorkingList(){
+		return workingList;
+	}
+	
+	public void workingListDisplay(){
+		int written = 0;
+		boolean activated = false;
+		for(Person p : workingList) {
+			System.out.print(p.getID());
+			written++;
+			if(written > 10 && activated == false) {
+				System.out.println();
+				activated = true;
+			}
+		}
+		System.out.println();
+	}
+	
+	public void waitingListDisplay() {
+		int written = 0;
+		boolean activated = false;
+		for(Person p: waitingList) {
+			System.out.print(p.getID());
+			written++;
+			if(written > 10 && activated == false) {
+				System.out.println();
+				activated = true;
+			}
+		}
+		System.out.println();
+	}
+	
+	public Queue<Person> getWaitingList(){
+		return waitingList;
+	}
 
 	/*
 	 * It returns a List of people from the queue to the lift

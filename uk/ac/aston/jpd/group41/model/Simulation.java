@@ -3,6 +3,7 @@ package uk.ac.aston.jpd.group41.model;
 import java.util.Random;
 
 import uk.ac.aston.jpd.group41.people.Person;
+import uk.ac.aston.jpd.group41.textview.TextView;
 
 /**
  * This {@code Simulation} class is the class that holds the all the elements to
@@ -14,14 +15,16 @@ import uk.ac.aston.jpd.group41.people.Person;
  */
 
 public class Simulation {
-	private int tick = 0;
+	private static int tick = 0;
 	private Building building;
 	private PersonGenerator personGen;
 	private Stats stats;
-	private double p = 0.9;
-	private double q = 0.002;
+	private double p = 0.005;
+	private double q = 0.01;
 	private Random rnd;
 	private int numOfFloors = 7;
+	private boolean ticking = false;
+	private int tickView = 0;
 
 	/**
 	 * Constructs a simulation element, holds a Random object that will be used to
@@ -36,7 +39,7 @@ public class Simulation {
 		this.personGen = new PersonGenerator(this, q);
 		personGen.createDeveloper(10);
 		personGen.createEmployeeNotDevelopers(10);
-		this.stats = new Stats(this);
+		// this.stats = new Stats(this);
 	}
 
 	/**
@@ -47,12 +50,6 @@ public class Simulation {
 	public void arrive(Person p) {
 		building.arrive(p);
 		// stats.arrive(c);
-	}
-	public void arriveInLift(Person p) {
-		stats.arriveinLift(p);
-	}
-	public void exitLift(Person p) {
-		stats.exitLift(p);
 	}
 
 	/**
@@ -71,12 +68,25 @@ public class Simulation {
 	public void tick() {
 		personGen.tick();
 		building.tick();
+		this.getBuilding().getLifts();
 	}
 
 	public void addTick() {
 		if(getTick() != 2880) {
 			tick++;
+			ticking= true;
 		} 
+	}
+	
+	public void addTickView() {
+		if(ticking) {
+			tickView++;
+		}
+		ticking = false;
+	}
+	
+	public int getTickView() {
+		return tickView;
 	}
 	
 	public void reduceTick() {
@@ -187,10 +197,20 @@ public class Simulation {
 	 * 
 	 * @param totalBuildingSimulationTime this is the time for how long the simulation runs
 	 */
-	public void run(int totalBuildingSimulationTime) {
-		while(tick < totalBuildingSimulationTime) {
+	 public void run(int totalBuildingSimulationTime) {
+		TextView view = new TextView();
+		/*while(getTick() < totalBuildingSimulationTime) {
+			//tick();
+		}*/
+		for (int i = 0; i < totalBuildingSimulationTime; i++) {
 			tick();
-			System.out.println("Simulation Tick " + tick);
+			addTickView();
+			view.display(this);
 		}
+		
+		/*for(int i = 0; i < totalBuildingSimulationTime; i++) {
+			System.out.println("Simulation Tick " + getTick());
+			view.display(this);
+		}*/
 	}
 }
